@@ -8,6 +8,7 @@ import com.ke.bella.openapi.safety.ISafetyCheckService;
 import com.ke.bella.openapi.safety.SafetyCheckRequest;
 import com.ke.bella.openapi.script.LuaScriptExecutor;
 import com.ke.bella.openapi.tables.pojos.ChannelDB;
+import com.ke.bella.queue.WorkerMode;
 import com.ke.bella.queue.worker.Worker;
 import com.theokanning.openai.queue.Take;
 import com.theokanning.openai.service.OpenAiService;
@@ -26,7 +27,7 @@ import java.util.concurrent.Semaphore;
 @Slf4j
 @Builder
 @SuppressWarnings("all")
-public class WorkerContext {
+public class SingleWorker implements WorkerService {
 
     private static final String QUEUE_NAME_LEVEL1_TEMPLATE = "%s:1";
     private static final String QUEUE_NAME_LEVEL0_TEMPLATE = "%s:0";
@@ -42,6 +43,16 @@ public class WorkerContext {
     private final ISafetyCheckService<SafetyCheckRequest.Chat> chatSafetyCheckService;
 
     private volatile BackoffTask backoffTask;
+
+    @Override
+    public WorkerMode workerMode() {
+        return WorkerMode.SINGLE;
+    }
+
+    @Override
+    public String queueName() {
+        return channel.getQueueName();
+    }
 
     public void start() {
         TaskProcessor taskProcessor = TaskProcessor.builder()
@@ -140,7 +151,7 @@ public class WorkerContext {
                     Thread.currentThread().interrupt();
                     break;
                 } catch (Exception e) {
-                    log.error("Worker error for channel: {}", channel.getChannelCode(), e);
+                    log.error("WorkerService error for channel: {}", channel.getChannelCode(), e);
                     backoff.onTaskNotFound();
                     try {
                         Thread.sleep(backoff.getNextInterval());

@@ -19,4 +19,5 @@ public class RouteResult {
     private String priceInfo;
     private Integer queueMode;
     private String queueName;
+    private Integer workerMode;
 }

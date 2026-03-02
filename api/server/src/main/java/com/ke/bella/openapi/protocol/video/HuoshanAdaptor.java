@@ -101,7 +101,7 @@ public class HuoshanAdaptor implements VideoAdaptor<HuoshanProperty> {
             return file;
 
         } catch (java.io.IOException e) {
-            log.error("[HuoshanAdaptor] Failed to transfer video: videoUrl={}", videoUrl, e);
+            log.error("[OpenAIBatchAdaptor] Failed to transfer video: videoUrl={}", videoUrl, e);
             throw new BellaException.ChannelException(502, "Failed to transfer video: " + e.getMessage());
         }
     }
