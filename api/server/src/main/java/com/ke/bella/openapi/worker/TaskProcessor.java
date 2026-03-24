@@ -40,7 +40,7 @@ public class TaskProcessor {
 
     public void executeTask(TaskWrapper taskWrapper) {
         String taskId = taskWrapper.getTask().getTaskId();
-        log.info("Task started, taskId: {}, channel: {}", taskId, channel.getChannelCode());
+        log.info("Task started, taskId: {}, channel: {}, task:{}", taskId, channel.getChannelCode(), JacksonUtils.serialize(taskWrapper));
         try {
             OpenapiResponse response = processRequest(taskWrapper.getTask().getData(), taskWrapper);
             if(response != null) {
